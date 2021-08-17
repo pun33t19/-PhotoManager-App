@@ -6,4 +6,44 @@
     android:layout_height="match_parent"
     tools:context=".CameraActivity">
 
+    <androidx.camera.view.PreviewView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/camerapreview"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@id/linearlayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <LinearLayout
+        android:id="@+id/linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:weightSum="3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/camerapreview"
+        >
+
+            <ImageButton
+                android:id="@+id/capturedimage"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_shutter_icon"
+                />
+
+
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ContentUris;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -17,21 +18,26 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.view.View;
 import android.widget.Adapter;
 import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.net.URI;
 import java.util.ArrayList;
 
+import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE=100;
+    private static final int PERMISSION_CAMERA_REQUEST_CODE=200;
     private ArrayList<String> imgPaths=new ArrayList<>();
     private RecyclerView recyclerview;
-
-
+    private FloatingActionButton floatingActionButton;
+    private final String CAMERA_STRING_CODE="com.app.photomanager.CameraPreview";
 
     private ProgrammingAdapterClass recyclerViewAdapter;
 
@@ -41,15 +47,36 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         requestPermissions();
-
+        floatingActionButton=findViewById(R.id.fabimage);
 
         recyclerview = findViewById(R.id.RecycleView);
         prepareRecyclerView();
 
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(ContextCompat.checkSelfPermission(getApplicationContext(),CAMERA)==PackageManager.PERMISSION_GRANTED){
+                  startCameraPreview();
+                }
+                else
+                    cameraPermissionRequest();
+
+            }
+        });
+
         //recyclerView.setAdapter(new ProgrammingAdapterClass(data));
     }
 
-        //check if the permissions are already granted at runtime
+    private void startCameraPreview() {
+        Intent intent=new Intent(getApplicationContext(),CameraActivity.class);
+        startActivity(intent);
+    }
+
+    private void cameraPermissionRequest() {
+        ActivityCompat.requestPermissions(this,new String[]{CAMERA},PERMISSION_CAMERA_REQUEST_CODE);
+    }
+
+    //check if the permissions are already granted at runtime
     private boolean checkPermissions(){
         int result= ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
 
@@ -132,6 +159,19 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "Permission is required to run the app", Toast.LENGTH_SHORT).show();
 
                 break;
+
+            case PERMISSION_CAMERA_REQUEST_CODE:
+                if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                    startCameraPreview();
+                }
+                else
+                    Toast.makeText(this, "Permission is required to run the camera", Toast.LENGTH_SHORT).show();
+
+                break;
+
         }
     }
+
+
 }

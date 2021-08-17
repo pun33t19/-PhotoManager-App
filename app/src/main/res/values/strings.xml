@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PhotoManager</string>
+    <string name="floatingactionbutton">FloatingActionButton</string>
 </resources>
