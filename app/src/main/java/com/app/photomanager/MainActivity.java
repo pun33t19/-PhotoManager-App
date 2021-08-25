@@ -29,10 +29,12 @@ import java.util.ArrayList;
 
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE=100;
+    private static final int PERMISSION_WRITE_REQUEST_CODE=101;
     private static final int PERMISSION_CAMERA_REQUEST_CODE=200;
     private ArrayList<String> imgPaths=new ArrayList<>();
     private RecyclerView recyclerview;
@@ -90,13 +92,21 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
             getImagePath();
         }
+        else if(checkWritePermissions()){
+            Toast.makeText(this, "Write permission granted", Toast.LENGTH_SHORT).show();
+        }
         else{
             //if permissions are not granted we are calling a methd to request permissions
             requestUserPermission();
         }
     }
 
+    private boolean checkWritePermissions() {
+        return ContextCompat.checkSelfPermission(getApplicationContext(),WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED;
+    }
+
     private void requestUserPermission() {
+        ActivityCompat.requestPermissions(this,new String[]{WRITE_EXTERNAL_STORAGE},PERMISSION_WRITE_REQUEST_CODE);
         ActivityCompat.requestPermissions(this,new String[]{READ_EXTERNAL_STORAGE},PERMISSION_REQUEST_CODE);
 
     }
@@ -115,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
             uri=MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
             }
 
-            final String[] columns={MediaStore.Images.Media.DATA,MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
+            final String[] columns={MediaStore.Images.Media.DATA,MediaStore.Images.Media.DISPLAY_NAME};
             final String order=MediaStore.Images.Media.DATE_TAKEN;
 
             Cursor cursor=getApplicationContext().getContentResolver().query(uri,columns,null,null,order+"  DESC");
@@ -128,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
             String absolutePath=cursor.getString(dataColumnIndex);
 
-            //URI contenturi= ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,)
+
             imgPaths.add(absolutePath);
         }
 
@@ -169,6 +179,13 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "Permission is required to run the camera", Toast.LENGTH_SHORT).show();
 
                 break;
+
+            case PERMISSION_WRITE_REQUEST_CODE:
+                if (grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
+                }
+                else
+                    Toast.makeText(this, "Permission is required", Toast.LENGTH_SHORT).show();
 
         }
     }
