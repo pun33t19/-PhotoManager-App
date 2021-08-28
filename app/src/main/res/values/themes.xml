@@ -14,4 +14,13 @@
         <!-- Customize your theme here. -->
 
     </style>
+
+    <style name="Splash_Screen" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+        <item name="colorPrimary">@color/design_default_color_primary</item>
+        <item name="colorPrimaryDark">@color/design_default_color_primary_dark</item>
+        <item name="colorAccent">@color/design_default_color_secondary</item>
+        <item name="android:statusBarColor">@color/purple_500</item>
+
+    </style>
 </resources>
